@@ -1,3 +1,5 @@
+/// A Vec<T> consists of three values: a pointer to the heap-allocated buffer for the elements, which is created and owned by the Vec<T>; the number of elements that buffer has the capacity to store; and the number it actually contains now (in other words, its length).
+
 fn main() {
     let mut primes = vec![2, 3, 5, 7];
 
