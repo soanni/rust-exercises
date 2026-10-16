@@ -1,97 +1,89 @@
 # rust-exercises
 
-A personal collection of small, self-contained Rust programs written while working
-through two books on the language. Each concept lives in its own tiny Cargo crate,
-so you can open any folder, read a few lines, and run it in isolation to see one
-idea in action.
+A personal collection of small, self-contained programs written while working
+through several books on Rust (plus a bit of C). Each concept lives in its own tiny
+crate, so you can open any folder, read a few lines, and run it in isolation to see
+one idea in action.
+
+The examples are now grouped by the book they came from. Within each book, folders
+are named after the concept being explored and numbered (`enums_1`, `enums_2`,
+`traits_1` … `traits_9`) to show an idea being built up step by step.
 
 If you're learning Rust, feel free to browse, copy, run, and break these examples.
 
-## What's inside
+## Books
 
-The repository is split into two collections, one per book:
-
-| Folder | Source | Focus |
+| Folder | Source | What's covered |
 | --- | --- | --- |
-| repository root | *The Rust Programming Language* ("the Book") | Core language: ownership, structs, enums, generics, traits, lifetimes, error handling, tests |
-| [`rust-in-month-of-luches/`](rust-in-month-of-luches/) | *Rust in a Month of Lunches* | Iterators, closures, collections, interior mutability, more idiomatic std usage |
+| [`the-book/`](the-book/) | *The Rust Programming Language* (the official "Book") | The whole language, start to finish: basics, ownership, structs, enums, generics, traits, lifetimes, error handling, tests, smart pointers, concurrency, and async |
+| [`rust-in-month-of-luches/`](rust-in-month-of-luches/) | *Rust in a Month of Lunches* | Idiomatic std usage: iterators, closures, collections, interior mutability, conversions |
+| [`oreilly-programming-rust/`](oreilly-programming-rust/) | *Programming Rust* (O'Reilly) | GCD calculator (incl. an Actix web version), moves, copies, references, closures, panics, overflow |
+| [`async-rust/`](async-rust/) | Async Rust practice | `async`/`await` with `tokio` and `reqwest` — a coffee-shop simulation, file and HTTP I/O, spawning processes, timed requests |
+| [`csapp_2016/`](csapp_2016/) | *Computer Systems: A Programmer's Perspective* | A plain C `hello` — a stray companion from systems study, not Rust |
+| [`rust-for-rustaceans/`](rust-for-rustaceans/) | *Rust for Rustaceans* | Placeholder — nothing here yet |
 
-Every subfolder is a standalone crate (its own `Cargo.toml` + `src/main.rs`, or
-`src/lib.rs` for the library examples). They all target **Rust edition 2024** and
-use only the standard library, with a single exception: `guessing_game` depends on
-the `rand` crate.
+Most crates use only the standard library. The exceptions:
 
-The examples are numbered (`enums_1`, `enums_2`, `traits_1` … `traits_9`) to show a
-concept being built up step by step. Folder names describe the idea being explored,
-so you can jump straight to whatever you're trying to understand.
+- `the-book/guessing_game` → `rand`
+- `the-book/hello-async`, `hello-async-1`, `concur_async_*` → `trpl` (the Book's async helper crate)
+- `async-rust/*` → `tokio`, and some also `reqwest` / `serde` / `serde_json`
+- `oreilly-programming-rust/actix-gcd` → `actix-web`, `serde`
+
+Every Rust crate targets **edition 2024**.
+
+## New since the last pass
+
+This is a much bigger collection than before. `the-book/` has grown well past the
+basics to cover the later chapters:
+
+- **Smart pointers** — `box_1`, `box_2`, `rc_1`, `deref_1`, `deref_2`, `drop_1`, `drop_2`
+- **Concurrency** — `thread_1` … `thread_4`, `mutex_1`, `mutex_2`, `channel_1` … `channel_4`
+- **Async** — `hello-async`, `hello-async-1`, `concur_async_1` … `concur_async_3`
+- **A real project** — `minigrep`, `minigrep_1` (the Book's grep clone, split into lib + binary)
+- **A Cargo workspace** — `add/` (a workspace with `add_one` and `adder` members)
+
+And three entirely new book folders joined the collection: `oreilly-programming-rust/`,
+`async-rust/`, and `csapp_2016/` (with `rust-for-rustaceans/` reserved for what's next).
 
 ## Running an example
 
-Each crate runs on its own. Pick a folder and use Cargo:
+Each folder is a standalone crate. Pick one and use Cargo:
 
 ```bash
-cd guessing_game
+cd the-book/guessing_game
 cargo run
 ```
 
-Library-style examples (e.g. `restaurant`, `adder`, `tests_1`) are meant to be
-tested rather than run:
+Library-style examples (e.g. `the-book/restaurant`, `the-book/adder`,
+`the-book/tests_1`, and the `minigrep` libs) are meant to be tested:
 
 ```bash
-cd tests_1
+cd the-book/tests_1
 cargo test
 ```
 
+The `add/` workspace builds all members together:
+
+```bash
+cd the-book/add
+cargo run -p adder
+```
+
+A couple of things aren't Cargo crates:
+
+- `the-book/hello_world` is the very first rustc example — compile it directly with
+  `rustc main.rs`.
+- `csapp_2016/hello.c` is C — `gcc hello.c -o hello` (or `cc`).
+
 You'll need a Rust toolchain — install it via [rustup](https://rustup.rs/) if you
-haven't already. Since these use edition 2024, a recent stable `rustc` (1.85+) is
+haven't already. Because these use edition 2024, a recent stable `rustc` (1.85+) is
 recommended.
-
-## Topic map (root — *The Rust Programming Language*)
-
-A rough guide to where things live at the repository root:
-
-- **Getting started** — `hello_world`, `hello_cargo`, `guessing_game`
-- **Common concepts** — `variables`, `shadow`, `expression`, `func*`, `branches*`,
-  `if_let*`, `loop*`, `while_loop*`, `for_loop*`
-- **Primitive types** — `bool`, `floats`, `num_operations`, `tuple`, `array`,
-  `array_invalid_index`
-- **Ownership, references & slices** — `scope_1`, `stack`, `clone_1`, `ref_owner*`,
-  `mut_ref_1`, `func_and_owner_1`, `dangling_ref_1`, `slices_*`, `str_1`,
-  `str_immutable`
-- **Structs** — `struct_*`, `tuple_struct_1`, `rectangle_1` … `rectangle_10`
-- **Enums & pattern matching** — `enums_*`, `match_*`
-- **Collections** — `vec_1`, `strings_*`, `hash_map_*`
-- **Modules & crates** — `restaurant*`, `backyard`, `use_1`
-- **Error handling** — `panic_*`, `result_*`, `error_propagation_*`, `try_*`
-- **Generics, traits & lifetimes** — `generics_*`, `generics_structs_*`, `traits_*`,
-  `lifetimes_*`
-- **Testing** — `adder`, `tests_1`
-
-## Topic map (`rust-in-month-of-luches/`)
-
-- **Iterators & adapters** — `iterator_*`, `fold_*`, `flatten_1`, `all_any_*`,
-  `find_position_1`, `chunks_windows_1`, `cycle_zip_1`, `peek_1`, `inspect_*`,
-  `match_indices_1`
-- **Closures** — `closure_1` … `closure_14`
-- **Collections** — `vector_*`, `vec_deque_1`, `hash_map_*`, `hash_set_1`,
-  `btree_map_1`, `binary_heap_*`
-- **Interior mutability & sync** — `interior_mutability_*` (incl. `_mutex_*` and
-  `_rwlock_*`)
-- **Options & results** — `option_*`, `result_*`, `unwrap_or`, `expect_1`,
-  `question_mark_operator_*`, `let_else_*`, `while_let_1`, `if_let_1`
-- **Traits, generics & the orphan rule** — `traits_*`, `generics_*`, `from_*`,
-  `orphan_rule_*`
-- **References & lifetimes** — `ref_*`, `reference_1`, `by_ref_1`, `lifetime_*`,
-  `lifetime_anonymous_*`
-- **Types & conversions** — `types_1`, `cast_as_char`, `enum_cast_int*`, `size_of`,
-  `const_and_static`
-- **Odds & ends** — `dbg_*`, `print_1`, `destructure`, `shadow_1`, `unit`,
-  `uninitialized_var`
 
 ## Notes
 
-- `target/` build artifacts are checked in for some crates but are gitignored going
-  forward — you can safely `cargo clean` any of them.
 - These are learning exercises, not production code. Expect the occasional
-  deliberately-broken example (e.g. `array_invalid_index`, `invalid_statement`,
-  `array_overflow`) that exists to demonstrate a compiler or runtime error.
+  deliberately-broken example (e.g. `the-book/array_invalid_index`,
+  `the-book/invalid_statement`) that exists to demonstrate a compiler or runtime
+  error, and a few experiments that overflow or panic on purpose
+  (`oreilly-programming-rust/int_overflow`, `stackoverflow_1`, `panic_*`).
+- `target/` build artifacts are gitignored — you can safely `cargo clean` any crate.
